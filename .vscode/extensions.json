@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "Vue.volar",
+    "dbaeumer.vscode-eslint",
+    "EditorConfig.EditorConfig",
+    "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint",
+    "abumalick.vscode-nvm",
+  ]
+}

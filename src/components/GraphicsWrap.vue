@@ -1,0 +1,26 @@
+<template>
+    <div class="graphics-wrap">
+        <CharacterPurple :character-mode="characterMode" :mouse-position="mousePosition" />
+        <CharacterBlack is-base :character-mode="characterMode" :mouse-position="mousePosition" />
+    </div>
+</template>
+
+<script lang="ts" setup>
+import CharacterBlack from './characters/CharacterBlack.vue'
+import CharacterPurple from './characters/CharacterPurple.vue'
+
+const props = defineProps<{
+    characterMode: 'idle' | 'skew' | 'gek'
+    mousePosition: {
+        x: number
+        y: number
+    } | null
+}>()
+</script>
+
+<style lang="scss" scoped>
+.graphics-wrap {
+    width: 660px;
+    flex-shrink: 0;
+}
+</style>

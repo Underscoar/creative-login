@@ -1,0 +1,19 @@
+@use 'reset';
+
+body {
+    background: #1d2025;
+}
+
+.graphics-wrap {
+    position: relative;
+
+    svg {
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        &.is-base {
+            position: relative;
+        }
+    }
+}
