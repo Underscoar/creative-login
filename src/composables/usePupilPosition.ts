@@ -2,7 +2,7 @@ import { computed, type Ref } from 'vue'
 import type { Position } from './useFacePosition'
 
 export interface PupilPositionOptions {
-    defaultPosition: Ref<Position>
+    faceCoordinates: Ref<Position>
     maxOffset?: number
     mousePosition: Ref<Position | null>
     sensitivity?: number
@@ -11,7 +11,7 @@ export interface PupilPositionOptions {
 export function usePupilPosition(options: PupilPositionOptions) {
     const {
         mousePosition,
-        defaultPosition,
+        faceCoordinates,
         maxOffset = 4,
         sensitivity = 300,
     } = options
@@ -21,8 +21,8 @@ export function usePupilPosition(options: PupilPositionOptions) {
             return { x: 0, y: 0 }
         }
 
-        const offsetX = mousePosition.value.x - defaultPosition.value.x
-        const offsetY = mousePosition.value.y - defaultPosition.value.y
+        const offsetX = mousePosition.value.x - faceCoordinates.value.x
+        const offsetY = mousePosition.value.y - faceCoordinates.value.y
 
         const distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY)
 

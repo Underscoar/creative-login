@@ -1,7 +1,7 @@
 <template>
     <div class="graphics-wrap">
-        <CharacterPurple :character-mode="characterMode" :mouse-position="mousePosition" />
-        <CharacterBlack is-base :character-mode="characterMode" :mouse-position="mousePosition" />
+        <!-- <CharacterPurple :character-mode="characterMode" :mouse-position="mousePosition" /> -->
+        <CharacterBlack is-base :mouse-position="mousePosition" />
     </div>
 </template>
 
@@ -10,7 +10,6 @@ import CharacterBlack from './characters/CharacterBlack.vue'
 import CharacterPurple from './characters/CharacterPurple.vue'
 
 const props = defineProps<{
-    characterMode: 'idle' | 'skew' | 'gek'
     mousePosition: {
         x: number
         y: number

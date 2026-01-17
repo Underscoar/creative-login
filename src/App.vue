@@ -1,13 +1,8 @@
 <template>
     <div class="page-wrap">
         <div ref="contentWrap" class="content-wrap">
-            <GraphicsWrap :character-mode="characterMode" :mouse-position="mousePosition" />
-            <LoginFormWrap
-                :mouse-position="mousePosition"
-                @gek="characterMode = 'gek'"
-                @idle="characterMode = 'idle'"
-                @skew="characterMode = 'skew'"
-            />
+            <GraphicsWrap :mouse-position="mousePosition" />
+            <LoginFormWrap :mouse-position="mousePosition" />
         </div>
     </div>
 </template>
@@ -17,8 +12,6 @@ import { ref, computed } from 'vue'
 import GraphicsWrap from './components/GraphicsWrap.vue'
 import LoginFormWrap from './components/LoginFormWrap.vue'
 import { useMouseInElement } from '@vueuse/core'
-
-const characterMode = ref<'idle' | 'skew' | 'gek'>('idle')
 
 const contentWrap = ref<HTMLElement | null>(null)
 const { elementX, elementY, isOutside } = useMouseInElement(contentWrap)

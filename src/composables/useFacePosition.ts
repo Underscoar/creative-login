@@ -1,4 +1,4 @@
-import { ref, computed, watch, type Ref } from 'vue'
+import { computed, ref, watch, type Ref } from 'vue'
 import { usePupilPosition } from './usePupilPosition'
 
 export interface Position {
@@ -7,8 +7,9 @@ export interface Position {
 }
 
 export interface FacePositionOptions {
-    defaultPosition: Ref<Position>
-    faceConstraints?: Ref<Position>
+    faceConstraints?: Position
+    faceCoordinates: Ref<Position>
+    faceSpacing?: number
     maxPupilOffset?: number
     maxRotation?: number
     mousePosition: Ref<Position | null>
@@ -19,8 +20,9 @@ export interface FacePositionOptions {
 export function useFacePosition(options: FacePositionOptions) {
     const {
         mousePosition,
-        defaultPosition,
-        faceConstraints = ref({ x: 20, y: 20 }),
+        faceCoordinates,
+        faceConstraints = { x: 20, y: 20 },
+        faceSpacing = 0,
         maxPupilOffset = 4,
         pupilSensitivity = 300,
         maxRotation = 8,
@@ -29,7 +31,7 @@ export function useFacePosition(options: FacePositionOptions) {
 
     const { pupilPosition, pupilTransform } = usePupilPosition({
         mousePosition,
-        defaultPosition,
+        faceCoordinates,
         maxOffset: maxPupilOffset,
         sensitivity: pupilSensitivity,
     })
@@ -56,14 +58,14 @@ export function useFacePosition(options: FacePositionOptions) {
 
     const facePosition = computed(() => {
         if (!mousePosition.value) {
-            return defaultPosition.value
+            return faceCoordinates.value
         }
 
         const clamp = (value: number, min: number, max: number) =>
             Math.max(min, Math.min(max, value))
 
-        const offsetX = mousePosition.value.x - defaultPosition.value.x
-        const offsetY = mousePosition.value.y - defaultPosition.value.y
+        const offsetX = mousePosition.value.x - faceCoordinates.value.x
+        const offsetY = mousePosition.value.y - faceCoordinates.value.y
 
         const distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY)
 
@@ -75,14 +77,14 @@ export function useFacePosition(options: FacePositionOptions) {
 
         return {
             x: clamp(
-                defaultPosition.value.x + scaledOffsetX,
-                defaultPosition.value.x - faceConstraints.value.x,
-                defaultPosition.value.x + faceConstraints.value.x,
+                faceCoordinates.value.x + scaledOffsetX,
+                faceCoordinates.value.x - faceConstraints.x,
+                faceCoordinates.value.x + faceConstraints.x,
             ),
             y: clamp(
-                defaultPosition.value.y + scaledOffsetY,
-                defaultPosition.value.y - faceConstraints.value.y,
-                defaultPosition.value.y + faceConstraints.value.y,
+                faceCoordinates.value.y + scaledOffsetY,
+                faceCoordinates.value.y - faceConstraints.y,
+                faceCoordinates.value.y + faceConstraints.y,
             ),
         }
     })
@@ -92,12 +94,14 @@ export function useFacePosition(options: FacePositionOptions) {
             return 0
         }
 
-        const offsetX = mousePosition.value.x - defaultPosition.value.x
+        const offsetX = mousePosition.value.x - faceCoordinates.value.x
         return (offsetX / rotationScale) * maxRotation * -1
     })
 
+    const faceCenterX = faceSpacing / 2
+
     const faceTransform = computed(
-        () => `translate(${facePosition.value.x},${facePosition.value.y}) rotate(${faceRotation.value})`,
+        () => `translate(${facePosition.value.x},${facePosition.value.y}) rotate(${faceRotation.value}, ${faceCenterX}, 0)`,
     )
 
     return {

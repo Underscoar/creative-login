@@ -1,14 +1,17 @@
 <template>
     <div class="login-form-wrap">
         <div class="login-form-content">
-            <button @click="emit('skew')">
-                SKEW
+            <button @click="characterState = 'curious'">
+                Curious
             </button>
-            <button @click="emit('gek')">
-                DOe gek
+            <button @click="characterState = 'idle'">
+                Idle
             </button>
-            <button @click="emit('idle')">
-                reset
+            <button @click="characterState = 'sad'">
+                Sad
+            </button>
+            <button @click="characterState = 'nervous'">
+                Nervous
             </button>
 
             <div>
@@ -20,11 +23,11 @@
 </template>
 
 <script lang="ts" setup>
-const emit = defineEmits<{
-    (e: 'skew'): void
-    (e: 'gek'): void
-    (e: 'idle'): void
-}>()
+import { useCharacterStore } from '@/stores/useCharacterStore'
+import { storeToRefs } from 'pinia'
+
+const characterStore = useCharacterStore()
+const { characterState } = storeToRefs(characterStore)
 
 const props = defineProps<{
     mousePosition: {
