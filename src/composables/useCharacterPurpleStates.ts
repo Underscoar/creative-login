@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 
-export function useCharacterBlackStates() {
+export function useCharacterPurpleStates() {
     const frameOptions = computed(() => ({
         width: 660,
         height: 800,
@@ -8,19 +8,24 @@ export function useCharacterBlackStates() {
     }))
 
     const basePosition = computed(() => ({
-        left: 343,
+        left: 250,
     }))
 
     // NOTE: Anchor of the face is the center of the left (character's right) eye
     const faceOptions = computed(() => ({
-        eyeRadius: 8,
-        pupilRadius: 4,
-        spacing: 30,
+        eyeRadius: 6,
+        pupilRadius: 3,
+        spacing: 45,
+    }))
+
+    const characterOptions = computed(() => ({
+        kinkLeftOffset: 140,
+        kinkRightOffset: 120,
     }))
 
     const idle = computed(() => {
-        const height = 263
-        const width = 107
+        const height = 360
+        const width = 150
         const faceWidth = (faceOptions.value.eyeRadius * 2) + faceOptions.value.spacing
         const anchorPosition = getTopLeftAnchorCoordinates(height)
 
@@ -47,29 +52,33 @@ export function useCharacterBlackStates() {
                 x: 0,
                 y: 0,
             },
+            faceRotation: 0,
         }
     })
 
     const idlePoints = computed(() => {
         const top = frameOptions.value.floor - idle.value.height
         const right = basePosition.value.left + idle.value.width
+
         return [
-            { x: basePosition.value.left, y: top },
-            { x: basePosition.value.left, y: frameOptions.value.floor },
-            { x: right, y: frameOptions.value.floor },
-            { x: right, y: top },
+            { x: basePosition.value.left, y: top }, // Top left
+            { x: basePosition.value.left, y: top + characterOptions.value.kinkLeftOffset }, // Kink left
+            { x: basePosition.value.left, y: frameOptions.value.floor }, // Bottom left
+            { x: right, y: frameOptions.value.floor }, // Bottom right
+            { x: right, y: top + characterOptions.value.kinkRightOffset }, // Kink right
+            { x: right, y: top }, // Top right
         ]
     })
 
     const skewed = computed(() => {
-        const skewAmount = 30
+        const skewAmount = 50
 
-        const height = 263
-        const width = 107
+        const height = 360
+        const width = 150
         const faceWidth = (faceOptions.value.eyeRadius * 2) + faceOptions.value.spacing
         const anchorPosition = getTopLeftAnchorCoordinates(height)
 
-        const centerOfFaceXCoordinate = anchorPosition.x + (width / 2) + skewAmount + 20
+        const centerOfFaceXCoordinate = anchorPosition.x + (width / 2) + skewAmount + 30
         const centerOfFaceYCoordinate = anchorPosition.y + 40
 
         const facePositionX = centerOfFaceXCoordinate - ((faceWidth / 2) - faceOptions.value.eyeRadius)
@@ -78,7 +87,7 @@ export function useCharacterBlackStates() {
         return {
             width: width,
             height: height,
-            allowMouseFollow: false,
+            allowMouseFollow: true,
             skew: skewAmount,
             centerOfFaceCoordinates: {
                 x: centerOfFaceXCoordinate,
@@ -89,9 +98,10 @@ export function useCharacterBlackStates() {
                 y: facePositionY,
             },
             transformPupils: {
-                x: 4,
+                x: 2,
                 y: 0,
             },
+            faceRotation: 0,
         }
     })
 
@@ -99,30 +109,33 @@ export function useCharacterBlackStates() {
         const top = frameOptions.value.floor - skewed.value.height
         const right = basePosition.value.left + skewed.value.width
         return [
-            { x: basePosition.value.left + skewed.value.skew, y: top },
-            { x: basePosition.value.left, y: frameOptions.value.floor },
-            { x: right, y: frameOptions.value.floor },
-            { x: right + skewed.value.skew, y: top },
+            { x: basePosition.value.left + skewed.value.skew, y: top }, // Top left
+            { x: basePosition.value.left + skewed.value.skew - 20, y: top + characterOptions.value.kinkLeftOffset }, // Kink left
+            { x: basePosition.value.left, y: frameOptions.value.floor }, // Bottom left
+            { x: right, y: frameOptions.value.floor }, // Bottom right
+            { x: right + skewed.value.skew - 15, y: top + characterOptions.value.kinkRightOffset }, // Kink right
+            { x: right + skewed.value.skew, y: top }, // Top right
         ]
     })
 
     const sad = computed(() => {
-        const height = 150
-        const width = 107
+        const skewAmount = -50
+        const height = 360
+        const width = 150
         const faceWidth = (faceOptions.value.eyeRadius * 2) + faceOptions.value.spacing
         const anchorPosition = getTopLeftAnchorCoordinates(height)
 
         const centerOfFaceXCoordinate = anchorPosition.x + (width / 2)
         const centerOfFaceYCoordinate = anchorPosition.y + 40
 
-        const facePositionX = centerOfFaceXCoordinate - ((faceWidth / 2) - faceOptions.value.eyeRadius)
-        const facePositionY = centerOfFaceYCoordinate - faceOptions.value.eyeRadius
+        const facePositionX = centerOfFaceXCoordinate - ((faceWidth / 2) - faceOptions.value.eyeRadius) - 20
+        const facePositionY = centerOfFaceYCoordinate - faceOptions.value.eyeRadius + 30
 
         return {
             width: width,
             height: height,
-            allowMouseFollow: false,
-            skew: 0,
+            allowMouseFollow: true,
+            skew: skewAmount,
             centerOfFaceCoordinates: {
                 x: centerOfFaceXCoordinate,
                 y: centerOfFaceYCoordinate,
@@ -132,39 +145,43 @@ export function useCharacterBlackStates() {
                 y: facePositionY,
             },
             transformPupils: {
-                x: 0,
-                y: 0,
+                x: 2.5,
+                y: -1,
             },
+            faceRotation: 20,
         }
     })
 
     const sadPoints = computed(() => {
-        const top = frameOptions.value.floor - sad.value.height
-        const right = basePosition.value.left + sad.value.width
+        const top = frameOptions.value.floor - idle.value.height
+        const right = basePosition.value.left + idle.value.width
+
         return [
-            { x: basePosition.value.left, y: top },
-            { x: basePosition.value.left, y: frameOptions.value.floor },
-            { x: right, y: frameOptions.value.floor },
-            { x: right, y: top },
+            { x: basePosition.value.left, y: top }, // Top left
+            { x: basePosition.value.left + sad.value.skew, y: top + characterOptions.value.kinkLeftOffset }, // Kink left
+            { x: basePosition.value.left, y: frameOptions.value.floor }, // Bottom left
+            { x: right, y: frameOptions.value.floor }, // Bottom right
+            { x: right + sad.value.skew, y: top + characterOptions.value.kinkRightOffset }, // Kink right
+            { x: right - 20, y: top - sad.value.skew }, // Top right
         ]
     })
 
     const nervous = computed(() => {
-        const height = 263
-        const width = 107
+        const height = 360
+        const width = 150
         const faceWidth = (faceOptions.value.eyeRadius * 2) + faceOptions.value.spacing
         const anchorPosition = getTopLeftAnchorCoordinates(height)
 
-        const centerOfFaceXCoordinate = anchorPosition.x + (width / 2) - 20
-        const centerOfFaceYCoordinate = anchorPosition.y + 150
+        const centerOfFaceXCoordinate = anchorPosition.x + (width / 2)
+        const centerOfFaceYCoordinate = anchorPosition.y + 40
 
-        const facePositionX = centerOfFaceXCoordinate - ((faceWidth / 2) - faceOptions.value.eyeRadius)
+        const facePositionX = centerOfFaceXCoordinate - ((faceWidth / 2) - faceOptions.value.eyeRadius) - 30
         const facePositionY = centerOfFaceYCoordinate - faceOptions.value.eyeRadius
 
         return {
             width: width,
             height: height,
-            allowMouseFollow: false,
+            allowMouseFollow: true,
             skew: 0,
             centerOfFaceCoordinates: {
                 x: centerOfFaceXCoordinate,
@@ -175,20 +192,24 @@ export function useCharacterBlackStates() {
                 y: facePositionY,
             },
             transformPupils: {
-                x: 0,
+                x: 3,
                 y: 0,
             },
+            faceRotation: 0,
         }
     })
 
     const nervousPoints = computed(() => {
         const top = frameOptions.value.floor - nervous.value.height
         const right = basePosition.value.left + nervous.value.width
+
         return [
-            { x: basePosition.value.left, y: top },
-            { x: basePosition.value.left, y: frameOptions.value.floor },
-            { x: right, y: frameOptions.value.floor },
-            { x: right, y: top },
+            { x: basePosition.value.left, y: top }, // Top left
+            { x: basePosition.value.left, y: top + characterOptions.value.kinkLeftOffset }, // Kink left
+            { x: basePosition.value.left, y: frameOptions.value.floor }, // Bottom left
+            { x: right, y: frameOptions.value.floor }, // Bottom right
+            { x: right, y: top + characterOptions.value.kinkRightOffset }, // Kink right
+            { x: right, y: top }, // Top right
         ]
     })
 

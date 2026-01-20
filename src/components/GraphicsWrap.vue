@@ -1,13 +1,15 @@
 <template>
     <div class="graphics-wrap">
-        <!-- <CharacterPurple :character-mode="characterMode" :mouse-position="mousePosition" /> -->
+        <CharacterPurple :mouse-position="mousePosition" />
         <CharacterBlack is-base :mouse-position="mousePosition" />
+        <CharacterOrange :mouse-position="mousePosition" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import CharacterBlack from './characters/CharacterBlack.vue'
 import CharacterPurple from './characters/CharacterPurple.vue'
+import CharacterOrange from './characters/CharacterOrange.vue'
 
 const props = defineProps<{
     mousePosition: {

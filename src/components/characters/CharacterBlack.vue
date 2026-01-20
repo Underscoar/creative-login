@@ -18,6 +18,7 @@
                 :face-coordinates="computedFacePosition"
                 :face-options="faceOptions"
                 :follow-mouse="computedState.state.allowMouseFollow"
+                :transform-pupils="computedState.state.transformPupils"
             />
         </g>
     </svg>
@@ -113,8 +114,8 @@ const computedState = computed(() => {
 })
 
 const transitionOptions: UseTransitionOptions = {
-    duration: 300,
-    transition: [0.3, 0.22, 0.16, 1],
+    duration: 500,
+    transition: [0.3, 0.22, 0, 0.99],
 }
 
 const topLeftX = useTransition(() => computedState.value.points[0]!.x, transitionOptions)
